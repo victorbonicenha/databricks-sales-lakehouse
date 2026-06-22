@@ -1,0 +1,2 @@
+# Databricks já fornece PySpark no ambiente do cluster/serverless.
+# Este arquivo é usado apenas para scripts locais.
