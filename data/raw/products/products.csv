@@ -1,0 +1,12 @@
+product_id,product_name,category,unit_price
+1,Notebook Basic,Electronics,3200.0
+2,Wireless Mouse,Electronics,89.9
+3,Mechanical Keyboard,Electronics,299.9
+4,Office Chair,Furniture,799.0
+5,Standing Desk,Furniture,1299.0
+6,Data Engineering Book,Books,159.9
+7,SQL Pocket Guide,Books,79.9
+8,Gaming Headset,Electronics,399.9
+9,Monitor 27,Electronics,1499.0
+10,Coffee Mug,Office,49.9
+11,Invalid Product,Testing,-10.0
