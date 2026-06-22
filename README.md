@@ -213,12 +213,6 @@ data/raw/
 
 ---
 
-## Como explicar esse projeto em entrevista
-
-> Desenvolvi um pipeline Lakehouse no Databricks usando PySpark e Delta Lake, aplicando arquitetura Medallion. O projeto ingere arquivos brutos de vendas na camada Bronze, realiza limpeza e validação na Silver, separa registros rejeitados e cria tabelas Gold para análise de faturamento, clientes, categorias e pagamentos. Também implementei checks simples de qualidade de dados para validar duplicidade, nulos e integridade dos resultados.
-
----
-
 ## Autor
 
 Projeto desenvolvido para estudo e portfólio em Engenharia de Dados.
