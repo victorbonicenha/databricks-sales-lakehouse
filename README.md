@@ -1,18 +1,18 @@
 # Databricks Sales Lakehouse
 
-Projeto de Engenharia de Dados usando **Databricks**, **PySpark**, **Delta Lake**, **SQL** e arquitetura **Medallion**.
+Projeto de Engenharia de Dados desenvolvido com **Databricks**, **PySpark**, **Delta Lake**, **SQL** e arquitetura **Medallion**.
 
-A ideia do projeto é simular um pipeline real de vendas de e-commerce, com ingestão de arquivos brutos, tratamento dos dados, validações de qualidade e criação de tabelas analíticas para consumo em SQL/Dashboard.
+O objetivo é simular um pipeline real de vendas de e-commerce, passando por ingestão de dados brutos, tratamento e padronização, validações de qualidade, criação de tabelas analíticas e visualizações de negócio a partir da camada Gold.
 
 ---
 
 ## Objetivo
 
-Construir um fluxo de dados dividido em camadas:
+Construir um fluxo de dados em camadas seguindo a arquitetura Medallion:
 
-* **Bronze:** ingestão dos dados crus, mantendo o máximo de fidelidade ao arquivo original.
-* **Silver:** limpeza, padronização, tipagem, tratamento de duplicados e separação de registros inválidos.
-* **Gold:** criação de tabelas analíticas para responder perguntas de negócio.
+* **Bronze:** ingestão dos dados crus, mantendo fidelidade ao formato original.
+* **Silver:** limpeza, padronização, tipagem, deduplicação e separação de registros inválidos.
+* **Gold:** criação de tabelas analíticas para consumo em SQL, dashboards e análises de negócio.
 
 ---
 
@@ -25,6 +25,7 @@ Construir um fluxo de dados dividido em camadas:
 * Python
 * Arquitetura Medallion
 * Data Quality Checks
+* Databricks Visualizations
 
 ---
 
@@ -53,6 +54,9 @@ Construir um fluxo de dados dividido em camadas:
 │   └── dashboard_queries.sql
 │
 ├── docs/
+│   ├── images/
+│   │   ├── daily_revenue.png
+│   │   └── revenue_by_category.png
 │   ├── architecture.md
 │   └── data_dictionary.md
 │
@@ -68,33 +72,36 @@ Arquivos CSV/JSON
         ↓
 Bronze - dados crus
         ↓
-Silver - dados limpos e padronizados
+Silver - dados limpos, padronizados e validados
         ↓
 Gold - métricas e tabelas analíticas
         ↓
-SQL / Dashboard
+SQL / Visualizações / Dashboard
 ```
 
 ---
 
 ## Datasets simulados
 
-O projeto usa dados fictícios de:
+O projeto utiliza dados fictícios de uma operação de e-commerce:
 
 * clientes
 * produtos
 * pedidos
 * pagamentos
 
-Os dados possuem propositalmente alguns problemas comuns em pipelines reais:
+Os dados foram criados com problemas comuns em pipelines reais, como:
 
 * registros duplicados
 * valores nulos
-* datas em texto
+* datas inválidas
 * status inconsistentes
 * valores negativos
 * pedidos sem cliente válido
-* pagamentos com divergência de valor
+* produtos inválidos
+* divergência entre valor do pedido e pagamento
+
+Esses problemas são tratados na camada Silver, onde os registros válidos seguem para consumo analítico e os inválidos são separados em tabelas de rejeição.
 
 ---
 
@@ -102,12 +109,16 @@ Os dados possuem propositalmente alguns problemas comuns em pipelines reais:
 
 ### Bronze
 
+Tabelas com os dados brutos, próximos ao formato original dos arquivos.
+
 * `bronze_customers`
 * `bronze_products`
 * `bronze_orders`
 * `bronze_payments`
 
 ### Silver
+
+Tabelas tratadas, padronizadas e validadas.
 
 * `silver_customers`
 * `silver_products`
@@ -119,6 +130,8 @@ Os dados possuem propositalmente alguns problemas comuns em pipelines reais:
 
 ### Gold
 
+Tabelas analíticas para consumo em SQL e visualizações.
+
 * `gold_daily_sales`
 * `gold_sales_by_category`
 * `gold_top_customers`
@@ -127,18 +140,106 @@ Os dados possuem propositalmente alguns problemas comuns em pipelines reais:
 
 ### Data Quality
 
+Tabela com o resultado das validações do pipeline.
+
 * `dq_results`
+
+---
+
+## Principais transformações
+
+Na camada Silver são aplicadas regras como:
+
+* conversão segura de tipos de dados
+* tratamento de datas inválidas
+* padronização de textos
+* normalização de status de pedidos e pagamentos
+* remoção de duplicados
+* validação de campos obrigatórios
+* validação de clientes e produtos existentes
+* cálculo do valor total do pedido
+* separação de registros rejeitados com motivo de erro
 
 ---
 
 ## Perguntas respondidas pela camada Gold
 
-* Qual o faturamento diário?
-* Qual o ticket médio por dia?
-* Quais categorias mais vendem?
+A camada Gold foi modelada para responder perguntas de negócio como:
+
+* Qual é o faturamento diário?
+* Qual é o ticket médio por dia?
+* Quais categorias geram mais receita?
 * Quais clientes mais compram?
-* Qual a distribuição dos status dos pedidos?
-* Quais métodos de pagamento têm maior volume?
+* Qual é a distribuição dos status dos pedidos?
+* Quais métodos de pagamento concentram maior volume financeiro?
+
+---
+
+## Dashboard Preview
+
+As tabelas da camada Gold foram utilizadas para criar visualizações analíticas no Databricks, demonstrando como os dados tratados podem ser consumidos em análises de negócio.
+
+O dashboard inicial foca em duas visões principais:
+
+- **Daily Revenue:** evolução diária da receita a partir dos pedidos válidos.
+- **Revenue by Category:** distribuição da receita por categoria de produto.
+
+### Daily Revenue
+
+<div align="center">
+  <img src="./docs/images/daily_revenue.png" alt="Daily Revenue" width="1000">
+</div>
+
+### Revenue by Category
+
+<div align="center">
+  <img src="./docs/images/revenue_by_category.png" alt="Revenue by Category" width="1000">
+</div>
+
+---
+
+## Consultas utilizadas nas visualizações
+
+### Daily Revenue
+
+```sql
+SELECT
+  CAST(order_date AS DATE) AS date,
+  CAST(gross_revenue AS DOUBLE) AS revenue
+FROM sales_lakehouse.gold_daily_sales
+ORDER BY date;
+```
+
+### Revenue by Category
+
+```sql
+SELECT
+  category,
+  CAST(gross_revenue AS DOUBLE) AS revenue
+FROM sales_lakehouse.gold_sales_by_category
+ORDER BY revenue DESC;
+```
+
+---
+
+## Data Quality
+
+O projeto inclui uma etapa de validação de qualidade dos dados, registrando os resultados na tabela `dq_results`.
+
+Exemplos de checks realizados:
+
+* verificação de tabelas vazias
+* identificação de duplicidade em pedidos
+* validação de quantidades inválidas
+* validação de chaves obrigatórias
+* verificação de divergência entre valor do pedido e pagamento
+* validação da existência de dados na camada Gold
+
+Os resultados são classificados como:
+
+* `PASS`
+* `WARN`
+* `FAIL`
 
 ---
 
@@ -146,23 +247,33 @@ Os dados possuem propositalmente alguns problemas comuns em pipelines reais:
 
 ### 1. Criar ou acessar um workspace Databricks
 
-Pode ser um workspace Community/Free/Trial ou corporativo.
+O projeto pode ser executado em um workspace Databricks Free, Community, Trial ou corporativo.
 
 ### 2. Subir os dados para o Databricks
 
-Você pode subir a pasta `data/raw` para algum caminho como:
+Suba a pasta `data/raw` para um caminho no Databricks, por exemplo:
 
 ```text
 /Volumes/workspace/default/sales_lakehouse/raw
 ```
 
-ou ajustar o caminho nos widgets dos notebooks.
+A estrutura esperada é:
+
+```text
+/Volumes/workspace/default/sales_lakehouse/raw/customers/customers.csv
+/Volumes/workspace/default/sales_lakehouse/raw/products/products.csv
+/Volumes/workspace/default/sales_lakehouse/raw/orders/orders_2026_q1.csv
+/Volumes/workspace/default/sales_lakehouse/raw/orders/orders_2026_q2.csv
+/Volumes/workspace/default/sales_lakehouse/raw/payments/payments_2026.json
+```
+
+Também é possível ajustar o caminho diretamente nos widgets dos notebooks.
 
 ### 3. Importar os notebooks
 
 Importe os arquivos da pasta `notebooks/` no Databricks.
 
-### 4. Rodar na ordem
+### 4. Rodar os notebooks na ordem
 
 ```text
 00_setup.py
@@ -172,7 +283,7 @@ Importe os arquivos da pasta `notebooks/` no Databricks.
 04_data_quality_checks.py
 ```
 
-### 5. Rodar as queries SQL
+### 5. Criar visualizações
 
 Use o arquivo:
 
@@ -180,19 +291,19 @@ Use o arquivo:
 sql/dashboard_queries.sql
 ```
 
-para criar visualizações no Databricks SQL.
+ou execute as consultas SQL diretamente no Databricks para criar gráficos e visualizações a partir das tabelas Gold.
 
 ---
 
 ## Como gerar novos dados localmente
 
-Caso queira gerar uma nova massa de dados:
+Para gerar uma nova massa de dados fictícios:
 
 ```bash
 python scripts/generate_fake_data.py
 ```
 
-O script vai recriar os arquivos em:
+O script recria os arquivos em:
 
 ```text
 data/raw/
@@ -205,11 +316,29 @@ data/raw/
 * Ingestão incremental com Auto Loader
 * Orquestração com Databricks Workflows
 * Integração com cloud storage
-* Criação de testes automatizados
 * Particionamento das tabelas Delta
+* Uso de Merge/Upsert com Delta Lake
 * Uso de Change Data Feed
+* Criação de testes automatizados de qualidade de dados
 * Monitoramento com logs técnicos
-* Criação de dashboard no Databricks SQL
+* Expansão do dashboard com mais métricas de negócio
+* Integração com LangGraph/LangSmith para análise inteligente dos resultados de Data Quality
+
+---
+
+## Resumo técnico
+
+Este projeto demonstra conceitos fundamentais de Engenharia de Dados em ambiente Lakehouse:
+
+* ingestão de arquivos CSV/JSON
+* processamento com PySpark
+* armazenamento em Delta Lake
+* arquitetura Medallion
+* tratamento e validação de dados
+* separação de registros rejeitados
+* criação de tabelas analíticas
+* consultas SQL para consumo da camada Gold
+* visualizações analíticas no Databricks
 
 ---
 
