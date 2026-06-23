@@ -1,4 +1,4 @@
-# Databricks Sales Lakehouse
+## 🚀 Databricks Sales Lakehouse
 
 Projeto de Engenharia de Dados desenvolvido com **Databricks**, **PySpark**, **Delta Lake**, **SQL** e arquitetura **Medallion**.
 
@@ -6,7 +6,7 @@ O objetivo é simular um pipeline real de vendas de e-commerce, passando por ing
 
 ---
 
-## Objetivo
+## 🎯 Objetivo
 
 Construir um fluxo de dados em camadas seguindo a arquitetura Medallion:
 
@@ -16,7 +16,7 @@ Construir um fluxo de dados em camadas seguindo a arquitetura Medallion:
 
 ---
 
-## Stack utilizada
+## 🛠️ Stack utilizada
 
 * Databricks
 * PySpark
@@ -29,7 +29,7 @@ Construir um fluxo de dados em camadas seguindo a arquitetura Medallion:
 
 ---
 
-## Estrutura do projeto
+## 📁 Estrutura do projeto
 
 ```text
 .
@@ -65,7 +65,7 @@ Construir um fluxo de dados em camadas seguindo a arquitetura Medallion:
 
 ---
 
-## Pipeline
+## 🔄 Pipeline
 
 ```text
 Arquivos CSV/JSON
@@ -81,7 +81,7 @@ SQL / Visualizações / Dashboard
 
 ---
 
-## Datasets simulados
+## 🧪 Datasets simulados
 
 O projeto utiliza dados fictícios de uma operação de e-commerce:
 
@@ -105,9 +105,9 @@ Esses problemas são tratados na camada Silver, onde os registros válidos segue
 
 ---
 
-## Tabelas criadas
+## 🗂️ Tabelas criadas
 
-### Bronze
+### 🥉 Bronze
 
 Tabelas com os dados brutos, próximos ao formato original dos arquivos.
 
@@ -116,7 +116,7 @@ Tabelas com os dados brutos, próximos ao formato original dos arquivos.
 * `bronze_orders`
 * `bronze_payments`
 
-### Silver
+### 🥈 Silver
 
 Tabelas tratadas, padronizadas e validadas.
 
@@ -128,7 +128,7 @@ Tabelas tratadas, padronizadas e validadas.
 * `silver_rejected_orders`
 * `silver_rejected_products`
 
-### Gold
+### 🥇 Gold
 
 Tabelas analíticas para consumo em SQL e visualizações.
 
@@ -138,7 +138,7 @@ Tabelas analíticas para consumo em SQL e visualizações.
 * `gold_payment_summary`
 * `gold_order_status_summary`
 
-### Data Quality
+### ✅ Data Quality
 
 Tabela com o resultado das validações do pipeline.
 
@@ -146,7 +146,7 @@ Tabela com o resultado das validações do pipeline.
 
 ---
 
-## Principais transformações
+## 🔧 Principais transformações
 
 Na camada Silver são aplicadas regras como:
 
@@ -162,7 +162,7 @@ Na camada Silver são aplicadas regras como:
 
 ---
 
-## Perguntas respondidas pela camada Gold
+## 📌 Perguntas respondidas pela camada Gold
 
 A camada Gold foi modelada para responder perguntas de negócio como:
 
@@ -175,7 +175,7 @@ A camada Gold foi modelada para responder perguntas de negócio como:
 
 ---
 
-## Dashboard Preview
+## 📊 Dashboard Preview
 
 As tabelas da camada Gold foram utilizadas para criar visualizações analíticas no Databricks, demonstrando como os dados tratados podem ser consumidos em análises de negócio.
 
@@ -184,13 +184,13 @@ O dashboard inicial foca em duas visões principais:
 - **Daily Revenue:** evolução diária da receita a partir dos pedidos válidos.
 - **Revenue by Category:** distribuição da receita por categoria de produto.
 
-### Daily Revenue
+### 📈 Daily Revenue
 
 <div align="center">
   <img src="./docs/images/daily_revenue.png" alt="Daily Revenue" width="1000">
 </div>
 
-### Revenue by Category
+### 🏷️ Revenue by Category
 
 <div align="center">
   <img src="./docs/images/revenue_by_category.png" alt="Revenue by Category" width="1000">
@@ -198,9 +198,9 @@ O dashboard inicial foca em duas visões principais:
 
 ---
 
-## Consultas utilizadas nas visualizações
+## 🧾 Consultas utilizadas nas visualizações
 
-### Daily Revenue
+### 📈 Daily Revenue
 
 ```sql
 SELECT
@@ -210,7 +210,7 @@ FROM sales_lakehouse.gold_daily_sales
 ORDER BY date;
 ```
 
-### Revenue by Category
+### 🏷️ Revenue by Category
 
 ```sql
 SELECT
@@ -222,7 +222,7 @@ ORDER BY revenue DESC;
 
 ---
 
-## Data Quality
+## ✅ Data Quality
 
 O projeto inclui uma etapa de validação de qualidade dos dados, registrando os resultados na tabela `dq_results`.
 
@@ -243,7 +243,7 @@ Os resultados são classificados como:
 
 ---
 
-## Como rodar no Databricks
+## ▶️ Como rodar no Databricks
 
 ### 1. Criar ou acessar um workspace Databricks
 
@@ -295,7 +295,7 @@ ou execute as consultas SQL diretamente no Databricks para criar gráficos e vis
 
 ---
 
-## Como gerar novos dados localmente
+## 🧬 Como gerar novos dados localmente
 
 Para gerar uma nova massa de dados fictícios:
 
@@ -311,7 +311,7 @@ data/raw/
 
 ---
 
-## Possíveis evoluções
+## 🚧 Possíveis evoluções
 
 * Ingestão incremental com Auto Loader
 * Orquestração com Databricks Workflows
@@ -326,7 +326,7 @@ data/raw/
 
 ---
 
-## Resumo técnico
+## 🧠 Resumo técnico
 
 Este projeto demonstra conceitos fundamentais de Engenharia de Dados em ambiente Lakehouse:
 
@@ -342,6 +342,6 @@ Este projeto demonstra conceitos fundamentais de Engenharia de Dados em ambiente
 
 ---
 
-## Autor
+## 👨‍💻 Autor
 
 Projeto desenvolvido para estudo e portfólio em Engenharia de Dados.
